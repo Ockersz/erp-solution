@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 import { blue, grey, red } from "@mui/material/colors";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 
 function Layout({ children }) {
@@ -19,6 +20,7 @@ function Layout({ children }) {
     localStorage.getItem("theme") || "light"
   );
   const [fade, setFade] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     localStorage.setItem("theme", themeMode);
@@ -28,6 +30,12 @@ function Layout({ children }) {
 
   const toggleTheme = () => {
     setThemeMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+    window.location.reload();
   };
 
   const lightTheme = createTheme({
@@ -79,6 +87,10 @@ function Layout({ children }) {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <style>
+        @import
+        url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+      </style>
       <Box
         sx={{
           display: "flex",
@@ -104,8 +116,18 @@ function Layout({ children }) {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              News
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{
+                flexGrow: 1,
+                fontFamily: "Montserrat",
+                fontWeight: 500,
+                color: "#fff",
+                fontSize: "1.5rem",
+              }}
+            >
+              Company Name
             </Typography>
             <Button
               color="inherit"
@@ -115,6 +137,9 @@ function Layout({ children }) {
               }}
             >
               {themeMode === "dark" ? <DarkModeIcon /> : <LightModeIcon />}
+            </Button>
+            <Button color="inherit" onClick={handleLogout}>
+              Sign Out
             </Button>
           </Toolbar>
         </AppBar>

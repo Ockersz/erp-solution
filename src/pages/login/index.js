@@ -16,7 +16,20 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Paper from "@mui/material/Paper";
 import React, { useState } from "react";
 
-function Login() {
+import PropTypes from "prop-types";
+
+async function loginUser(credentials) {
+  return fetch("http://localhost:8081/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    body: JSON.stringify(credentials),
+  }).then((data) => data.json());
+}
+
+function Login({ setToken }) {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -25,6 +38,15 @@ function Login() {
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const token = await loginUser({
+      userName,
+      password,
+    });
+    setToken(token);
   };
 
   return (
@@ -161,6 +183,9 @@ function Login() {
                 marginTop: "10px",
                 borderRadius: "50px",
               }}
+              onClick={(e) => {
+                handleSubmit(e);
+              }}
             >
               Sign In
             </Button>
@@ -172,3 +197,7 @@ function Login() {
 }
 
 export default Login;
+
+Login.propTypes = {
+  setToken: PropTypes.func.isRequired,
+};
